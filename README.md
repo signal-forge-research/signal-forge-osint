@@ -279,7 +279,6 @@ Independent research project focused on OSINT, public-data analysis, provenance,
 
 Email: research@signalforgeresearch.com
 
-(early development stage)
 Website: https://signalforgeresearch.com
 
 GitHub Organization: https://github.com/signal-forge-research
