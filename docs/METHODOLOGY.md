@@ -1,4 +1,4 @@
-## Signal Forge OSINT Research Methodology
+# Signal Forge OSINT Research Methodology
 
 This document describes the research methodology used by Signal Forge OSINT.
 
