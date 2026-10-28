@@ -1,0 +1,15 @@
+{
+  "name": "signalforge-page-views",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-10-27",
+  "workers_dev": true,
+  "observability": { "enabled": false },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "signalforge-page-views",
+      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "migrations_dir": "migrations"
+    }
+  ]
+}
