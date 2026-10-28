@@ -6,6 +6,7 @@ const increment = `INSERT INTO page_views (id, total, started_at) VALUES (1, 1, 
 const totalQuery = "SELECT total, started_at FROM page_views WHERE id = 1";
 const clip = (value, max = 500) => typeof value === "string" ? value.slice(0, max) : "";
 function sitePath(value) {
+  if (typeof value !== "string" || !value) return "";
   try { const url = new URL(value, "https://signalforgeresearch.com"); return origins.has(url.origin) ? url.pathname.slice(0, 500) : ""; }
   catch { return ""; }
 }
@@ -44,7 +45,7 @@ export default {
       const name = url.pathname.slice(7);
       if (!assets.has(name)) return new Response("Not found", { status: 404 });
       try {
-        const upstream = await fetch(`https://signalforgeresearch.com/assets/${name}`, { redirect: "error" });
+        const upstream = await fetch(`https://signalforgeresearch.com/assets/${name}`, { redirect: "manual" });
         if (!upstream.ok) return new Response("Asset unavailable", { status: 502 });
         await record(request, env, { type: "asset_request", target: `/assets/${name}`, referrer: request.headers.get("Referer") });
         return new Response(upstream.body, { headers: { ...common, "Content-Type": "image/png" } });
