@@ -42,7 +42,7 @@ test('pixels remain separate, preference headers skip logs, and old records expi
   env.sql.exec("UPDATE analytics_events SET occurred_at='2000-01-01T00:00:00Z'");
   const path='/pixel/'+'a'.repeat(32)+'.gif';
   const pixel=await worker.fetch(req(path),env);assert.equal(pixel.headers.get('Content-Type'),'image/gif');assert.equal((await pixel.arrayBuffer()).byteLength,42);
-  const rows=env.sql.prepare('SELECT * FROM analytics_events').all();assert.equal(rows.length,1);assert.equal(rows[0].event_type,'pixel_request');
+  const rows=env.sql.prepare('SELECT * FROM analytics_events').all();assert.equal(rows.length,1);assert.equal(rows[0].event_type,'pixel_request');assert.equal(rows[0].page_path,'');
   assert.equal((await(await worker.fetch(req(),env)).json()).total,1);
   await worker.fetch(req(path,'GET',undefined,{'DNT':'1'}),env);
   await worker.fetch(req('/event','POST',event,{'Sec-GPC':'1'}),env);
@@ -67,10 +67,11 @@ test('validation, preflight, failures, and origins prevent unwanted writes',asyn
 test('allowlisted images proxy successful responses and record image requests',async()=>{
  const env=database(), original=globalThis.fetch;
  try{
-  globalThis.fetch=async(url)=>{assert.equal(url,'https://signalforgeresearch.com/assets/signal-forge-logo.png');return new Response('image bytes');};
+  globalThis.fetch=async(url,options)=>{if(options.redirect==='error') throw new TypeError('Workers does not support redirect:error');assert.equal(url,'https://signalforgeresearch.com/assets/signal-forge-logo.png');return new Response('image bytes');};
   const response=await worker.fetch(req('/asset/signal-forge-logo.png'),env);
   assert.equal(response.status,200);assert.equal(await response.text(),'image bytes');
   assert.equal(env.sql.prepare('SELECT event_type FROM analytics_events').get().event_type,'asset_request');
+  globalThis.fetch=async()=>new Response('',{status:302,headers:{Location:'https://other.example'}});assert.equal((await worker.fetch(req('/asset/signal-forge-logo.png'),env)).status,502);
   globalThis.fetch=async()=>new Response('',{status:404});assert.equal((await worker.fetch(req('/asset/signal-forge-logo.png'),env)).status,502);
   assert.equal(env.sql.prepare('SELECT count(*) AS n FROM analytics_events').get().n,1);
  }finally{globalThis.fetch=original;env.sql.close();}
