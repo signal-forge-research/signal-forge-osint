@@ -1,14 +1,14 @@
 {
-  "name": "signalforge-page-views",
+  "name": "signalforge-analytics",
   "main": "worker.mjs",
   "compatibility_date": "2026-10-27",
   "workers_dev": true,
-  "observability": { "enabled": false },
+  "observability": { "enabled": true },
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "signalforge-page-views",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "database_name": "signalforge-analytics",
+      "database_id": "557ece64-300c-436e-87fd-8064e55c7697",
       "migrations_dir": "migrations"
     }
   ]
