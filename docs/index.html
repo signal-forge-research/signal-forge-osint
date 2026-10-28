@@ -680,11 +680,13 @@
     <div class="wrap footer-row">
       <span>&copy; <span id="year"></span> Signal Forge Research.</span>
       <span>Independent research and development.</span>
+      <span data-site-views hidden>Page views: <span data-site-views-value></span></span>
     </div>
   </footer>
 
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
+  <script src="assets/page-views.js" type="module"></script>
 </body>
 </html>
